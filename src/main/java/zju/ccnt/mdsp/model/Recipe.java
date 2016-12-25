@@ -1,18 +1,16 @@
 package zju.ccnt.mdsp.model;
 
-import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
 
 /**
- * Created by Cc on 2016/12/23.
+ * Created by Dewayne on 2016/12/25.
  */
-@Entity
 public class Recipe {
     private int id;
     private Integer userId;
     private Date createdDate;
-    private String name;
+    private String patient;
     private Integer gender;
     private Integer age;
     private String recordId;
@@ -23,8 +21,6 @@ public class Recipe {
     private String checker;
     private List<DrugItem> drugItemsById;
 
-    @Id
-    @Column(name = "id", nullable = false)
     public int getId() {
         return id;
     }
@@ -33,8 +29,6 @@ public class Recipe {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "userId", nullable = true)
     public Integer getUserId() {
         return userId;
     }
@@ -43,8 +37,6 @@ public class Recipe {
         this.userId = userId;
     }
 
-    @Basic
-    @Column(name = "createdDate", nullable = true)
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -53,18 +45,14 @@ public class Recipe {
         this.createdDate = createdDate;
     }
 
-    @Basic
-    @Column(name = "name", nullable = true, length = 40)
-    public String getName() {
-        return name;
+    public String getPatient() {
+        return patient;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPatient(String patient) {
+        this.patient = patient;
     }
 
-    @Basic
-    @Column(name = "gender", nullable = true)
     public Integer getGender() {
         return gender;
     }
@@ -73,8 +61,6 @@ public class Recipe {
         this.gender = gender;
     }
 
-    @Basic
-    @Column(name = "age", nullable = true)
     public Integer getAge() {
         return age;
     }
@@ -83,8 +69,6 @@ public class Recipe {
         this.age = age;
     }
 
-    @Basic
-    @Column(name = "recordId", nullable = true, length = 40)
     public String getRecordId() {
         return recordId;
     }
@@ -93,8 +77,6 @@ public class Recipe {
         this.recordId = recordId;
     }
 
-    @Basic
-    @Column(name = "address", nullable = true, length = 40)
     public String getAddress() {
         return address;
     }
@@ -103,8 +85,6 @@ public class Recipe {
         this.address = address;
     }
 
-    @Basic
-    @Column(name = "diagnosis", nullable = true, length = 40)
     public String getDiagnosis() {
         return diagnosis;
     }
@@ -113,8 +93,6 @@ public class Recipe {
         this.diagnosis = diagnosis;
     }
 
-    @Basic
-    @Column(name = "doctor", nullable = true, length = 40)
     public String getDoctor() {
         return doctor;
     }
@@ -123,8 +101,6 @@ public class Recipe {
         this.doctor = doctor;
     }
 
-    @Basic
-    @Column(name = "charge", nullable = true, precision = 2)
     public Double getCharge() {
         return charge;
     }
@@ -133,8 +109,6 @@ public class Recipe {
         this.charge = charge;
     }
 
-    @Basic
-    @Column(name = "checker", nullable = true, length = 40)
     public String getChecker() {
         return checker;
     }
@@ -153,7 +127,7 @@ public class Recipe {
         if (id != recipe.id) return false;
         if (userId != null ? !userId.equals(recipe.userId) : recipe.userId != null) return false;
         if (createdDate != null ? !createdDate.equals(recipe.createdDate) : recipe.createdDate != null) return false;
-        if (name != null ? !name.equals(recipe.name) : recipe.name != null) return false;
+        if (patient != null ? !patient.equals(recipe.patient) : recipe.patient != null) return false;
         if (gender != null ? !gender.equals(recipe.gender) : recipe.gender != null) return false;
         if (age != null ? !age.equals(recipe.age) : recipe.age != null) return false;
         if (recordId != null ? !recordId.equals(recipe.recordId) : recipe.recordId != null) return false;
@@ -171,7 +145,7 @@ public class Recipe {
         int result = id;
         result = 31 * result + (userId != null ? userId.hashCode() : 0);
         result = 31 * result + (createdDate != null ? createdDate.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (patient != null ? patient.hashCode() : 0);
         result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (age != null ? age.hashCode() : 0);
         result = 31 * result + (recordId != null ? recordId.hashCode() : 0);
@@ -183,7 +157,6 @@ public class Recipe {
         return result;
     }
 
-    @OneToMany(mappedBy = "recipeByRecipeId")
     public List<DrugItem> getDrugItemsById() {
         return drugItemsById;
     }

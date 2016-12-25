@@ -1,13 +1,11 @@
 package zju.ccnt.mdsp.model;
 
-import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
 
 /**
- * Created by Cc on 2016/12/23.
+ * Created by Dewayne on 2016/12/25.
  */
-@Entity
 public class Assay {
     private int id;
     private Integer userId;
@@ -25,8 +23,6 @@ public class Assay {
     private Date finishedDate;
     private List<AssayItem> assayItemsById;
 
-    @Id
-    @Column(name = "id", nullable = false)
     public int getId() {
         return id;
     }
@@ -35,8 +31,6 @@ public class Assay {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "userId", nullable = true)
     public Integer getUserId() {
         return userId;
     }
@@ -45,8 +39,6 @@ public class Assay {
         this.userId = userId;
     }
 
-    @Basic
-    @Column(name = "event", nullable = true, length = 40)
     public String getEvent() {
         return event;
     }
@@ -55,8 +47,6 @@ public class Assay {
         this.event = event;
     }
 
-    @Basic
-    @Column(name = "patient", nullable = true, length = 40)
     public String getPatient() {
         return patient;
     }
@@ -65,8 +55,6 @@ public class Assay {
         this.patient = patient;
     }
 
-    @Basic
-    @Column(name = "sample", nullable = true, length = 40)
     public String getSample() {
         return sample;
     }
@@ -75,8 +63,6 @@ public class Assay {
         this.sample = sample;
     }
 
-    @Basic
-    @Column(name = "gender", nullable = true)
     public Integer getGender() {
         return gender;
     }
@@ -85,8 +71,6 @@ public class Assay {
         this.gender = gender;
     }
 
-    @Basic
-    @Column(name = "department", nullable = true, length = 40)
     public String getDepartment() {
         return department;
     }
@@ -95,8 +79,6 @@ public class Assay {
         this.department = department;
     }
 
-    @Basic
-    @Column(name = "age", nullable = true)
     public Integer getAge() {
         return age;
     }
@@ -105,8 +87,6 @@ public class Assay {
         this.age = age;
     }
 
-    @Basic
-    @Column(name = "demander", nullable = true, length = 40)
     public String getDemander() {
         return demander;
     }
@@ -115,8 +95,6 @@ public class Assay {
         this.demander = demander;
     }
 
-    @Basic
-    @Column(name = "coroner", nullable = true, length = 40)
     public String getCoroner() {
         return coroner;
     }
@@ -125,8 +103,6 @@ public class Assay {
         this.coroner = coroner;
     }
 
-    @Basic
-    @Column(name = "checker", nullable = true, length = 40)
     public String getChecker() {
         return checker;
     }
@@ -135,8 +111,6 @@ public class Assay {
         this.checker = checker;
     }
 
-    @Basic
-    @Column(name = "note", nullable = true, length = 40)
     public String getNote() {
         return note;
     }
@@ -145,8 +119,6 @@ public class Assay {
         this.note = note;
     }
 
-    @Basic
-    @Column(name = "startedDate", nullable = true)
     public Date getStartedDate() {
         return startedDate;
     }
@@ -155,8 +127,6 @@ public class Assay {
         this.startedDate = startedDate;
     }
 
-    @Basic
-    @Column(name = "finishedDate", nullable = true)
     public Date getFinishedDate() {
         return finishedDate;
     }
@@ -209,7 +179,6 @@ public class Assay {
         return result;
     }
 
-    @OneToMany(mappedBy = "assayByAssayId")
     public List<AssayItem> getAssayItemsById() {
         return assayItemsById;
     }

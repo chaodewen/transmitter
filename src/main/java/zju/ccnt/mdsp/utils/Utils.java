@@ -25,6 +25,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import zju.ccnt.mdsp.model.User;
+import zju.ccnt.mdsp.settings.Constant;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -40,6 +42,17 @@ import java.util.Set;
  */
 
 public class Utils {
+    /**
+     * 检查name是否存在与Constant.privateFields中的字符串相同
+     */
+    public static boolean isMatched(String name) {
+        for(String field : Constant.privateFields) {
+            if(field.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * 生成错误回复
      */

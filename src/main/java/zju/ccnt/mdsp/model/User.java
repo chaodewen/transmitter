@@ -1,13 +1,11 @@
 package zju.ccnt.mdsp.model;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * Created by Cc on 2016/12/23.
+ * Created by Dewayne on 2016/12/25.
  */
-@Entity
 public class User {
     private int id;
     private String name;
@@ -17,11 +15,9 @@ public class User {
     private String phone;
     private String email;
     private Timestamp created;
-    private List<Assay> assaysById;
     private List<Recipe> recipesById;
+    private List<Assay> assaysById;
 
-    @Id
-    @Column(name = "id", nullable = false)
     public int getId() {
         return id;
     }
@@ -30,8 +26,6 @@ public class User {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name", nullable = true, length = 40)
     public String getName() {
         return name;
     }
@@ -40,8 +34,6 @@ public class User {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "age", nullable = true)
     public Integer getAge() {
         return age;
     }
@@ -50,8 +42,6 @@ public class User {
         this.age = age;
     }
 
-    @Basic
-    @Column(name = "idcard", nullable = true, length = 40)
     public String getIdcard() {
         return idcard;
     }
@@ -60,8 +50,6 @@ public class User {
         this.idcard = idcard;
     }
 
-    @Basic
-    @Column(name = "password", nullable = true, length = 40)
     public String getPassword() {
         return password;
     }
@@ -70,8 +58,6 @@ public class User {
         this.password = password;
     }
 
-    @Basic
-    @Column(name = "phone", nullable = true, length = 40)
     public String getPhone() {
         return phone;
     }
@@ -80,8 +66,6 @@ public class User {
         this.phone = phone;
     }
 
-    @Basic
-    @Column(name = "email", nullable = true, length = 40)
     public String getEmail() {
         return email;
     }
@@ -90,8 +74,6 @@ public class User {
         this.email = email;
     }
 
-    @Basic
-    @Column(name = "created", nullable = true)
     public Timestamp getCreated() {
         return created;
     }
@@ -132,21 +114,19 @@ public class User {
         return result;
     }
 
-    @OneToMany(mappedBy = "userByUserId")
-    public List<Assay> getAssaysById() {
-        return assaysById;
-    }
-
-    public void setAssaysById(List<Assay> assaysById) {
-        this.assaysById = assaysById;
-    }
-
-    @OneToMany(mappedBy = "userByUserId")
     public List<Recipe> getRecipesById() {
         return recipesById;
     }
 
     public void setRecipesById(List<Recipe> recipesById) {
         this.recipesById = recipesById;
+    }
+
+    public List<Assay> getAssaysById() {
+        return assaysById;
+    }
+
+    public void setAssaysById(List<Assay> assaysById) {
+        this.assaysById = assaysById;
     }
 }
