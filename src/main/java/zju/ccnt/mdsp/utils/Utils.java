@@ -3,6 +3,8 @@ package zju.ccnt.mdsp.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.PropertyFilter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
@@ -10,8 +12,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
@@ -20,12 +20,10 @@ import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import zju.ccnt.mdsp.model.User;
 import zju.ccnt.mdsp.settings.Constant;
 
 import javax.net.ssl.SSLContext;
@@ -43,15 +41,31 @@ import java.util.Set;
 
 public class Utils {
     /**
-     * 检查name是否存在与Constant.privateFields中的字符串相同
+     * 隐私化处理
      */
-    public static boolean isMatched(String name) {
-        for(String field : Constant.privateFields) {
-            if(field.equals(name)) {
-                return true;
-            }
+    public static String rmPrivacy(boolean privacy, JSON object) {
+        if(privacy) {
+            return JSON.toJSONString(object, new PropertyFilter() {
+                public boolean apply(Object object, String name, Object value) {
+                    if(object == null) {
+                        return false;
+                    }
+                    for(String field : Constant.privateFields) {
+                        if(field.equals(name)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            });
         }
-        return false;
+        else {
+            return JSON.toJSONString(object, new PropertyFilter() {
+                public boolean apply(Object object, String name, Object value) {
+                    return object != null;
+                }
+            });
+        }
     }
     /**
      * 生成错误回复

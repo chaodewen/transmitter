@@ -11,21 +11,21 @@ import zju.ccnt.mdsp.settings.Constant;
 import zju.ccnt.mdsp.utils.Utils;
 
 /**
- * Created by Dewayne on 2016/12/25.
+ * Created by Cc on 2016/12/26.
  */
 
 @RestController
-public class RecipeService {
-    @RequestMapping(value = "/recipes", method = RequestMethod.GET
+public class AssayService {
+    @RequestMapping(value = "/assays", method = RequestMethod.GET
             , produces="text/plain;charset=UTF-8")
-    public ResponseEntity getRecipes(@RequestParam("idcard") String idcard
+    public ResponseEntity getAssays(@RequestParam("idcard") String idcard
             , @RequestParam("privacy") boolean privacy) {
         try {
             String userIdUrl = Constant.hisUrl + "/users/id?idcard=" + idcard;
             User user = Utils.getByJSONObject(userIdUrl, null).toJavaObject(User.class);
 
-            String recipeUrl = Constant.hisUrl + "/recipes?userId=" + user.getId();
-            JSONArray jsonArray = Utils.getByJSONArray(recipeUrl, null);
+            String assayUrl = Constant.hisUrl + "/assays?userId=" + user.getId();
+            JSONArray jsonArray = Utils.getByJSONArray(assayUrl, null);
             String result = Utils.rmPrivacy(privacy, jsonArray);
             return ResponseEntity.ok(result);
         } catch (NullPointerException e) {
