@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PropertyFilter;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
@@ -25,15 +25,18 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import zju.ccnt.mdsp.model.User;
 import zju.ccnt.mdsp.settings.Constant;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -44,14 +47,44 @@ import java.util.Set;
 
 public class Utils {
     /**
+     * 对内容使用key获取消息摘要
+     * 方法是先进行HMAC_SHA256处理
+     * 再用Base64进行编码方便网络传输
+     */
+    public static String hash(String key, String content) {
+        Mac sha256_HMAC;
+        try {
+            sha256_HMAC = Mac.getInstance("HmacSHA256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+        SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(), "HmacSHA256");
+
+        try {
+            sha256_HMAC.init(secret_key);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return Base64.encodeBase64String(sha256_HMAC.doFinal(content.getBytes()));
+    }
+    /**
      * 验证用户并返回idcard
      * 验证失败时返回null
      */
-    public static String verifyUser(String key) {
+    public static String verifyUser(String cipher, String id, String mac) {
+        if(!cipher.equals(hash(Constant.FRONTEND_KEY, id + mac))) {
+            return null;
+        }
         try {
-            String verifyUrl = Constant.userInfoUrl + "/users/verification";
+            String verifyUrl = Constant.USER_INFO_SYSTEM_URL + "/users/verification";
             List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-            pairs.add(new BasicNameValuePair("key", key));
+            pairs.add(new BasicNameValuePair("id", id));
+            pairs.add(new BasicNameValuePair("mac", mac));
+            pairs.add(new BasicNameValuePair("cipher", hash(
+                    Constant.USER_INFO_SYSTEM_KEY, id + mac)));
             JSONObject info = Utils.postJSONObject(verifyUrl, null, pairs);
             if(info == null) {
                 return null;
@@ -72,7 +105,7 @@ public class Utils {
                     if(object == null) {
                         return false;
                     }
-                    for(String field : Constant.privateFields) {
+                    for(String field : Constant.PRIVACY_FIELDS) {
                         if(field.equals(name)) {
                             return false;
                         }

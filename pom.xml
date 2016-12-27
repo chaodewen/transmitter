@@ -2,8 +2,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>transmitter</groupId>
-    <artifactId>zju.ccnt.mdsp</artifactId>
+    <groupId>zju.ccnt.mdsp</groupId>
+    <artifactId>transmitter</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
     <url>http://maven.apache.org</url>

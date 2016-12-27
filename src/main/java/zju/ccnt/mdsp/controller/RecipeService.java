@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import zju.ccnt.mdsp.model.User;
 import zju.ccnt.mdsp.settings.Constant;
 import zju.ccnt.mdsp.utils.Utils;
 
@@ -18,14 +17,15 @@ import zju.ccnt.mdsp.utils.Utils;
 public class RecipeService {
     @RequestMapping(value = "/recipes", method = RequestMethod.POST
             , produces="text/plain;charset=UTF-8")
-    public ResponseEntity getRecipes(@RequestParam String key
+    public ResponseEntity getRecipes(@RequestParam String cipher
+            , @RequestParam String id, @RequestParam String mac
             , @RequestParam("privacy") boolean privacy) {
         try {
-            String idcard = Utils.verifyUser(key);
+            String idcard = Utils.verifyUser(cipher, id, mac);
             if(idcard == null) {
                 return Utils.genErrorResponse(404, "Not Found");
             }
-            String recipeUrl = Constant.hisUrl + "/recipes?cardid=" + idcard;
+            String recipeUrl = Constant.HIS_URL + "/recipes?cardid=" + idcard;
             JSONArray jsonArray = Utils.getJSONArray(recipeUrl, null);
             String result = Utils.rmPrivacy(privacy, jsonArray);
             return ResponseEntity.ok(result);

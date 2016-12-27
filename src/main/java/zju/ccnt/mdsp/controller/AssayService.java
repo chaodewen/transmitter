@@ -21,10 +21,10 @@ public class AssayService {
     public ResponseEntity getAssays(@RequestParam("idcard") String idcard
             , @RequestParam("privacy") boolean privacy) {
         try {
-            String userIdUrl = Constant.hisUrl + "/users/id?idcard=" + idcard;
+            String userIdUrl = Constant.HIS_URL + "/users/id?idcard=" + idcard;
             User user = Utils.getByJSONObject(userIdUrl, null).toJavaObject(User.class);
 
-            String assayUrl = Constant.hisUrl + "/assays?userId=" + user.getId();
+            String assayUrl = Constant.HIS_URL + "/assays?userId=" + user.getId();
             JSONArray jsonArray = Utils.getJSONArray(assayUrl, null);
             String result = Utils.rmPrivacy(privacy, jsonArray);
             return ResponseEntity.ok(result);
