@@ -16,16 +16,17 @@ import zju.ccnt.mdsp.utils.Utils;
 
 @RestController
 public class RecipeService {
-    @RequestMapping(value = "/recipes", method = RequestMethod.GET
+    @RequestMapping(value = "/recipes", method = RequestMethod.POST
             , produces="text/plain;charset=UTF-8")
-    public ResponseEntity getRecipes(@RequestParam("idcard") String idcard
+    public ResponseEntity getRecipes(@RequestParam String key
             , @RequestParam("privacy") boolean privacy) {
         try {
-            String userIdUrl = Constant.hisUrl + "/users/id?idcard=" + idcard;
-            User user = Utils.getByJSONObject(userIdUrl, null).toJavaObject(User.class);
-
-            String recipeUrl = Constant.hisUrl + "/recipes?userId=" + user.getId();
-            JSONArray jsonArray = Utils.getByJSONArray(recipeUrl, null);
+            String idcard = Utils.verifyUser(key);
+            if(idcard == null) {
+                return Utils.genErrorResponse(404, "Not Found");
+            }
+            String recipeUrl = Constant.hisUrl + "/recipes?cardid=" + idcard;
+            JSONArray jsonArray = Utils.getJSONArray(recipeUrl, null);
             String result = Utils.rmPrivacy(privacy, jsonArray);
             return ResponseEntity.ok(result);
         } catch (NullPointerException e) {

@@ -25,7 +25,7 @@ public class AssayService {
             User user = Utils.getByJSONObject(userIdUrl, null).toJavaObject(User.class);
 
             String assayUrl = Constant.hisUrl + "/assays?userId=" + user.getId();
-            JSONArray jsonArray = Utils.getByJSONArray(assayUrl, null);
+            JSONArray jsonArray = Utils.getJSONArray(assayUrl, null);
             String result = Utils.rmPrivacy(privacy, jsonArray);
             return ResponseEntity.ok(result);
         } catch (NullPointerException e) {

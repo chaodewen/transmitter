@@ -20,10 +20,12 @@ import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import zju.ccnt.mdsp.model.User;
 import zju.ccnt.mdsp.settings.Constant;
 
 import javax.net.ssl.SSLContext;
@@ -32,6 +34,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -40,6 +43,25 @@ import java.util.Set;
  */
 
 public class Utils {
+    /**
+     * 验证用户并返回idcard
+     * 验证失败时返回null
+     */
+    public static String verifyUser(String key) {
+        try {
+            String verifyUrl = Constant.userInfoUrl + "/users/verification";
+            List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+            pairs.add(new BasicNameValuePair("key", key));
+            JSONObject info = Utils.postJSONObject(verifyUrl, null, pairs);
+            if(info == null) {
+                return null;
+            }
+            return info.getString("idcard");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     /**
      * 隐私化处理
      */
@@ -74,15 +96,15 @@ public class Utils {
         return ResponseEntity.status(status).contentType(MediaType.APPLICATION_JSON_UTF8)
                 .body("{\"error\":\"" + message + "\"}");
     }
+
     /**
-     * 出错返回null
+     * 正常返回实体字符串
+     * 异常时返回null
      */
-    public static JSONArray getByJSONArray(String url, Set<Header> headers) {
-        CloseableHttpResponse response = sendGet(url, headers);
+    private static String getEntity(CloseableHttpResponse response) {
         if(response.getStatusLine().getStatusCode() / 100 == 2) {
             try {
-                String entity = EntityUtils.toString(response.getEntity(), "UTF-8");
-                return JSON.parseArray(entity);
+                return EntityUtils.toString(response.getEntity(), "UTF-8");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -92,17 +114,42 @@ public class Utils {
     /**
      * 出错返回null
      */
+    public static JSONObject postJSONObject(String url, Set<Header> headers
+            , List<NameValuePair> pairList) {
+        CloseableHttpResponse response = sendPost(url, pairList, headers);
+        String entity = getEntity(response);
+
+        if(entity == null) {
+            return null;
+        }
+
+        return JSON.parseObject(entity);
+    }
+    /**
+     * 出错返回null
+     */
+    public static JSONArray getJSONArray(String url, Set<Header> headers) {
+        CloseableHttpResponse response = sendGet(url, headers);
+        String entity = getEntity(response);
+
+        if(entity == null) {
+            return null;
+        }
+
+        return JSON.parseArray(entity);
+    }
+    /**
+     * 出错返回null
+     */
     public static JSONObject getByJSONObject(String url, Set<Header> headers) {
         CloseableHttpResponse response = sendGet(url, headers);
-        if(response.getStatusLine().getStatusCode() / 100 == 2) {
-            try {
-                String entity = EntityUtils.toString(response.getEntity(), "UTF-8");
-                return JSON.parseObject(entity);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        String entity = getEntity(response);
+
+        if(entity == null) {
+            return null;
         }
-        return null;
+
+        return JSON.parseObject(entity);
     }
     private static CloseableHttpClient generateClient(String url) {
         CloseableHttpClient httpClient = null;
