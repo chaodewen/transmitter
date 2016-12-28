@@ -1,24 +1,24 @@
 package zju.ccnt.mdsp.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import zju.ccnt.mdsp.model.User;
 import zju.ccnt.mdsp.settings.Constant;
 import zju.ccnt.mdsp.utils.Utils;
 
 /**
- * Created by Cc on 2016/12/26.
+ * Created by Dewayne on 2016/12/28.
  */
 
 @RestController
-public class AssayService {
-    @RequestMapping(value = "/assays", method = RequestMethod.POST
+public class UserService {
+    @RequestMapping(value = "/users", method = RequestMethod.POST
             , produces="text/plain;charset=UTF-8")
-    public ResponseEntity getAssays(@RequestParam String cipher
+    public ResponseEntity getUsers(@RequestParam String cipher
             , @RequestParam String id, @RequestParam String mac
             , @RequestParam("privacy") boolean privacy) {
         try {
@@ -27,9 +27,10 @@ public class AssayService {
                 return Utils.genErrorResponse(404, "Not Found");
             }
 
-            String assayUrl = Constant.HIS_URL + "/assays?userId=" + userId;
-            JSONArray jsonArray = Utils.getJSONArray(assayUrl, null);
-            String result = Utils.rmPrivacy(privacy, jsonArray);
+            String userUrl = Constant.HIS_URL + "/users/essentials/" + userId;
+            JSONObject jsonObject = Utils.getByJSONObject(userUrl, null);
+            String result = Utils.rmPrivacy(privacy, jsonObject);
+            System.out.println("---> getUsers() : result = " + result);
             return ResponseEntity.ok(result);
         } catch (NullPointerException e) {
             return Utils.genErrorResponse(404, "Not Found");

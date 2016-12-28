@@ -75,21 +75,29 @@ public class Utils {
      * 验证失败时返回null
      */
     public static String verifyUser(String cipher, String id, String mac) {
-        if(!cipher.equals(hash(Constant.FRONTEND_KEY, id + mac))) {
-            return null;
-        }
+//        if(!cipher.equals(hash(Constant.FRONTEND_KEY, id + mac))) {
+//            return null;
+//        }
         try {
-            String verifyUrl = Constant.USER_INFO_SYSTEM_URL + "/users/verification";
-            List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-            pairs.add(new BasicNameValuePair("id", id));
-            pairs.add(new BasicNameValuePair("mac", mac));
-            pairs.add(new BasicNameValuePair("cipher", hash(
-                    Constant.USER_INFO_SYSTEM_KEY, id + mac)));
-            JSONObject info = Utils.postJSONObject(verifyUrl, null, pairs);
-            if(info == null) {
+//            String verifyUrl = Constant.USER_INFO_SYSTEM_URL + "/users/verification";
+//            List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+//            pairs.add(new BasicNameValuePair("id", id));
+//            pairs.add(new BasicNameValuePair("mac", mac));
+//            pairs.add(new BasicNameValuePair("cipher", hash(
+//                    Constant.USER_INFO_SYSTEM_KEY, id + mac)));
+//            JSONObject info = Utils.postJSONObject(verifyUrl, null, pairs);
+
+            String verifyUrl = Constant.USER_INFO_SYSTEM_URL + "/users/" + id;
+            JSONObject verifyInfo = Utils.getByJSONObject(verifyUrl, null);
+            if(verifyInfo == null) {
                 return null;
             }
-            return info.getString("idcard");
+
+            String idUrl = Constant.HIS_URL + "/users/id?idcard=" + verifyInfo.getString("idcard");
+            JSONObject idInfo = Utils.getByJSONObject(idUrl, null);
+            String userId = idInfo.getString("id");
+            System.out.println("---> verifyUser() : userId = " + userId);
+            return userId;
         } catch (Exception e) {
             e.printStackTrace();
         }

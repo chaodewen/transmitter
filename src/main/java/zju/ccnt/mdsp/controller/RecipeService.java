@@ -21,11 +21,12 @@ public class RecipeService {
             , @RequestParam String id, @RequestParam String mac
             , @RequestParam("privacy") boolean privacy) {
         try {
-            String idcard = Utils.verifyUser(cipher, id, mac);
-            if(idcard == null) {
+            String userId = Utils.verifyUser(cipher, id, mac);
+            if(userId == null) {
                 return Utils.genErrorResponse(404, "Not Found");
             }
-            String recipeUrl = Constant.HIS_URL + "/recipes?cardid=" + idcard;
+
+            String recipeUrl = Constant.HIS_URL + "/recipes?userId=" + userId;
             JSONArray jsonArray = Utils.getJSONArray(recipeUrl, null);
             String result = Utils.rmPrivacy(privacy, jsonArray);
             return ResponseEntity.ok(result);
