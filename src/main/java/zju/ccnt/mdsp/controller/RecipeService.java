@@ -19,7 +19,7 @@ public class RecipeService {
             , produces="text/plain;charset=UTF-8")
     public ResponseEntity getRecipes(@RequestParam String cipher
             , @RequestParam String id, @RequestParam String mac
-            , @RequestParam("privacy") boolean privacy) {
+            , @RequestParam(value = "privacy", defaultValue = "false") boolean privacy) {
         try {
             String userId = Utils.verifyUser(cipher, id, mac);
             if(userId == null) {

@@ -20,7 +20,7 @@ public class AssayService {
             , produces="text/plain;charset=UTF-8")
     public ResponseEntity getAssays(@RequestParam String cipher
             , @RequestParam String id, @RequestParam String mac
-            , @RequestParam("privacy") boolean privacy) {
+            , @RequestParam(value = "privacy", defaultValue = "false") boolean privacy) {
         try {
             String userId = Utils.verifyUser(cipher, id, mac);
             if(userId == null) {
