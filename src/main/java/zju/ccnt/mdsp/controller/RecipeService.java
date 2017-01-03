@@ -19,7 +19,9 @@ public class RecipeService {
             , produces="text/plain;charset=UTF-8")
     public ResponseEntity getRecipes(@RequestParam String cipher
             , @RequestParam String id, @RequestParam String mac
-            , @RequestParam(value = "privacy", defaultValue = "false") boolean privacy) {
+            , @RequestParam(value = "privacy", defaultValue = "false") boolean privacy
+            , @RequestParam(value = "start", defaultValue = "default") String start
+            , @RequestParam(value = "end", defaultValue = "default") String end) {
         try {
             String userId = Utils.verifyUser(cipher, id, mac);
             if(userId == null) {
@@ -27,6 +29,12 @@ public class RecipeService {
             }
 
             String recipeUrl = Constant.HIS_URL + "/recipes?userId=" + userId;
+            if(!"default".equals(start)) {
+                recipeUrl += "&start=" + start;
+            }
+            if(!"default".equals(end)) {
+                recipeUrl += "&end=" + end;
+            }
             JSONArray jsonArray = Utils.getJSONArray(recipeUrl, null);
             String result = Utils.rmPrivacy(privacy, jsonArray);
             return ResponseEntity.ok(result);

@@ -20,7 +20,9 @@ public class AssayService {
             , produces="text/plain;charset=UTF-8")
     public ResponseEntity getAssays(@RequestParam String cipher
             , @RequestParam String id, @RequestParam String mac
-            , @RequestParam(value = "privacy", defaultValue = "false") boolean privacy) {
+            , @RequestParam(value = "privacy", defaultValue = "false") boolean privacy
+            , @RequestParam(value = "start", defaultValue = "default") String start
+            , @RequestParam(value = "end", defaultValue = "default") String end) {
         try {
             String userId = Utils.verifyUser(cipher, id, mac);
             if(userId == null) {
@@ -28,6 +30,12 @@ public class AssayService {
             }
 
             String assayUrl = Constant.HIS_URL + "/assays?userId=" + userId;
+            if(!"default".equals(start)) {
+                assayUrl += "&start=" + start;
+            }
+            if(!"default".equals(end)) {
+                assayUrl += "&end=" + end;
+            }
             JSONArray jsonArray = Utils.getJSONArray(assayUrl, null);
             String result = Utils.rmPrivacy(privacy, jsonArray);
             return ResponseEntity.ok(result);
